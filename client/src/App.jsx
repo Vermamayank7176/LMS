@@ -15,9 +15,9 @@ function App() {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {user && <Navbar />}
-      <main className="flex-grow container mx-auto px-4 py-8">
+    <div className="min-h-screen flex flex-col transition-all duration-300">
+      {user && <div className="sticky top-4 z-50 px-4 md:px-8"><Navbar /></div>}
+      <main className="flex-grow container mx-auto px-4 py-8 mt-2">
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />

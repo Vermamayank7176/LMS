@@ -1,49 +1,67 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { BookOpen, LogOut, LayoutDashboard, Library, FileText } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  const NavLink = ({ to, icon: Icon, children }) => {
+    const isActive = location.pathname === to;
+    return (
+      <Link 
+        to={to} 
+        className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
+          isActive 
+            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' 
+            : 'text-gray-600 hover:bg-white/80 hover:text-indigo-600'
+        }`}
+      >
+        <Icon size={18} /> {children}
+      </Link>
+    );
+  };
+
   return (
-    <nav className="bg-indigo-600 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2 text-white font-bold text-xl">
+    <nav className="glass-nav rounded-2xl max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 hover:shadow-xl">
+      <div className="flex justify-between h-16 items-center">
+        <div className="flex items-center gap-8">
+          <Link to="/" className="flex-shrink-0 flex items-center gap-2 text-indigo-700 font-extrabold text-2xl tracking-tight">
+            <div className="bg-indigo-600 text-white p-1.5 rounded-lg shadow-md shadow-indigo-500/40">
               <BookOpen size={24} />
-              LMS
-            </Link>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link to="/" className="text-indigo-100 hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
-                <LayoutDashboard className="mr-1" size={18} /> Dashboard
-              </Link>
-              <Link to="/books" className="text-indigo-100 hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
-                <Library className="mr-1" size={18} /> Books
-              </Link>
-              {user?.role === 'admin' && (
-                <Link to="/transactions" className="text-indigo-100 hover:text-white inline-flex items-center px-1 pt-1 text-sm font-medium">
-                  <FileText className="mr-1" size={18} /> Transactions
-                </Link>
-              )}
             </div>
+            LMS
+          </Link>
+          
+          <div className="hidden md:flex space-x-2 bg-gray-100/50 p-1.5 rounded-2xl border border-white/60">
+            <NavLink to="/" icon={LayoutDashboard}>Dashboard</NavLink>
+            <NavLink to="/books" icon={Library}>Books</NavLink>
+            {user?.role === 'admin' && (
+              <NavLink to="/transactions" icon={FileText}>Transactions</NavLink>
+            )}
           </div>
-          <div className="flex items-center">
-            <span className="text-white mr-4 text-sm font-medium">Hi, {user?.name} ({user?.role})</span>
-            <button
-              onClick={handleLogout}
-              className="text-indigo-100 hover:text-white p-2 rounded-md focus:outline-none flex items-center gap-1 text-sm"
-            >
-              <LogOut size={18} /> Logout
-            </button>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex flex-col items-end">
+            <span className="text-gray-900 text-sm font-bold leading-tight">{user?.name}</span>
+            <span className="text-indigo-600 text-xs font-semibold px-2 py-0.5 bg-indigo-50 rounded-full mt-0.5 border border-indigo-100">
+              {user?.role.toUpperCase()}
+            </span>
           </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-gray-100/80 hover:bg-red-50 hover:text-red-600 text-gray-700 p-2 sm:px-4 sm:py-2 rounded-xl text-sm font-semibold transition-all duration-300 border border-gray-200/50 hover:border-red-200"
+          >
+            <LogOut size={18} /> <span className="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </nav>

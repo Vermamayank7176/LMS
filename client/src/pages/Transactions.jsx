@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
+import { ArrowRightLeft, UserCheck, BookCopy, CalendarClock, CheckCircle2 } from 'lucide-react';
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -64,25 +65,36 @@ const Transactions = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-800">Manage Transactions</h1>
+    <div className="space-y-8 animate-fade-in-up">
+      <div>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+           <ArrowRightLeft className="text-indigo-600" size={36}/> Manage Transactions
+        </h1>
+        <p className="text-gray-500 font-medium mt-1">Issue books, track active checkouts, and process returns.</p>
+      </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-600">
-        <h2 className="text-xl font-bold mb-4">Issue a Book</h2>
-        <form onSubmit={handleIssue} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      <div className="glass p-6 rounded-3xl shadow-xl border border-white/60">
+        <h2 className="text-xl font-extrabold mb-6 flex items-center gap-2 text-indigo-900 border-b border-indigo-100 pb-3">
+          <BookCopy className="text-indigo-500" /> Issue a New Book
+        </h2>
+        <form onSubmit={handleIssue} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Select User</label>
-            <select required className="mt-1 block w-full pl-3 pr-10 py-2 border rounded-md"
+            <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">
+              <UserCheck size={16} className="text-indigo-400"/> Select User
+            </label>
+            <select required className="glass-input w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
                     value={issueData.user} onChange={e => setIssueData({...issueData, user: e.target.value})}>
-              <option value="">- Select User -</option>
+              <option value="">-- Choose User --</option>
               {users.map(u => <option key={u._id} value={u._id}>{u.name} ({u.email})</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Select Book</label>
-            <select required className="mt-1 block w-full pl-3 pr-10 py-2 border rounded-md"
+            <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">
+              <BookCopy size={16} className="text-indigo-400"/> Select Book
+            </label>
+            <select required className="glass-input w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
                     value={issueData.book} onChange={e => setIssueData({...issueData, book: e.target.value})}>
-              <option value="">- Select Book -</option>
+              <option value="">-- Choose Book --</option>
               {books.map(b => (
                 <option key={b._id} value={b._id} disabled={b.availableCopies <= 0}>
                   {b.title} ({b.availableCopies} avail)
@@ -91,59 +103,71 @@ const Transactions = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Due Date</label>
-            <input type="date" required className="mt-1 block w-full px-3 py-2 border rounded-md"
+            <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">
+              <CalendarClock size={16} className="text-indigo-400"/> Due Date
+            </label>
+            <input type="date" required className="glass-input w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
                    value={issueData.dueDate} onChange={e => setIssueData({...issueData, dueDate: e.target.value})} />
           </div>
           <div>
-            <button type="submit" className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-              Issue Book
+            <button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-4 py-3 rounded-xl font-bold shadow-lg transition-all active:scale-95">
+              Issue Protocol
             </button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-         <h2 className="text-xl font-bold p-6 border-b bg-gray-50">Transaction History</h2>
+      <div className="glass shadow-2xl rounded-3xl overflow-hidden border border-white/60">
+         <h2 className="text-xl font-extrabold p-6 bg-white/40 border-b border-indigo-100 flex items-center gap-2">
+           <CheckCircle2 className="text-indigo-600" /> Active Registry
+         </h2>
          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200/50">
+              <thead className="bg-gray-50/50 backdrop-blur-md">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Book</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dates (Issue / Due / Return)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Patron</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Asset (Book)</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Chronology</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">State</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-500 uppercase tracking-wider">Quick Action</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200/50">
                 {transactions.map(tx => (
-                  <tr key={tx._id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tx.user?.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tx.book?.title}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      I: {new Date(tx.issueDate).toLocaleDateString()}<br/>
-                      D: {new Date(tx.dueDate).toLocaleDateString()}<br/>
-                      {tx.returnDate && `R: ${new Date(tx.returnDate).toLocaleDateString()}`}
+                  <tr key={tx._id} className="hover:bg-white/40 transition-colors duration-200">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-bold text-gray-900">{tx.user?.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        tx.status === 'returned' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      <div className="text-sm font-bold text-indigo-900">{tx.book?.title}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col gap-0.5 text-xs font-semibold text-gray-600">
+                        <span className="text-emerald-600">Issued: {new Date(tx.issueDate).toLocaleDateString()}</span>
+                        <span className="text-rose-600">Due: {new Date(tx.dueDate).toLocaleDateString()}</span>
+                        {tx.returnDate && <span className="text-indigo-600">Ret: {new Date(tx.returnDate).toLocaleDateString()}</span>}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-4 py-1.5 inline-flex text-xs leading-5 font-black rounded-full shadow-sm ${
+                        tx.status === 'returned' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
                       }`}>
-                        {tx.status}
+                        {tx.status.toUpperCase()}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      {tx.status === 'issued' && (
-                        <button onClick={() => handleReturn(tx._id)} className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded">
+                      {tx.status === 'issued' ? (
+                        <button onClick={() => handleReturn(tx._id)} className="text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50 border border-indigo-200 px-4 py-1.5 rounded-lg shadow-sm font-bold transition-all active:scale-95">
                           Mark Returned
                         </button>
+                      ) : (
+                        <span className="text-gray-400 font-bold block text-center px-4 py-1.5">✓ Cleared</span>
                       )}
                     </td>
                   </tr>
                 ))}
                 {transactions.length === 0 && (
-                  <tr><td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">No transactions found</td></tr>
+                  <tr><td colSpan="5" className="px-6 py-8 text-center text-sm font-semibold text-gray-500">No active transactions logged.</td></tr>
                 )}
               </tbody>
             </table>
